@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # Database Service (PostgreSQL)
+  db:
+    image: postgres:15
+    container_name: clinica_vet_db
+    environment:
+      - POSTGRES_DB=clinica_vet
+      - POSTGRES_PASSWORD=master_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./schema_corte3.sql:/docker-entrypoint-initdb.d/00_schema_corte3.sql
+      - ./backend/01_procedures.sql:/docker-entrypoint-initdb.d/01_procedures.sql
+      - ./backend/02_triggers.sql:/docker-entrypoint-initdb.d/02_triggers.sql
+      - ./backend/03_views.sql:/docker-entrypoint-initdb.d/03_views.sql
+      - ./backend/04_roles_y_permisos.sql:/docker-entrypoint-initdb.d/04_roles_y_permisos.sql
+      - ./backend/05_rls.sql:/docker-entrypoint-initdb.d/05_rls.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d clinica_vet"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Cache Service (Redis)
+  redis:
+    image: redis:alpine
+    container_name: clinica_vet_redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # API Service (Node.js)
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: clinica_vet_api
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
