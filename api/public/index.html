@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínica Veterinaria - Control de Seguridad</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Pantalla de Login -->
+        <div id="login-screen" class="view active">
+            <div class="login-card">
+                <div class="logo">
+                    <h1>vet<span>clinic</span></h1>
+                </div>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="role-select">Rol de Acceso</label>
+                        <select id="role-select" required>
+                            <option value="" disabled selected>Selecciona un rol</option>
+                            <option value="rol_admin">Administrador</option>
+                            <option value="rol_veterinario">Veterinario</option>
+                            <option value="rol_recepcion">Recepcionista</option>
+                        </select>
+                    </div>
+                    <div id="vet-id-group" class="form-group hidden">
+                        <label for="vet-id">ID de Veterinario</label>
+                        <input type="number" id="vet-id" placeholder="Ej: 1">
+                    </div>
+                    <button type="submit" class="btn-primary">Ingresar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Pantalla de Dashboard -->
+        <div id="dashboard-screen" class="view">
+            <header>
+                <div class="header-content">
+                    <h2>Panel de Control</h2>
+                    <div class="user-info">
+                        <span id="display-role">ADMIN</span>
+                        <button id="logout-btn" class="btn-link">Cerrar Sesión</button>
+                    </div>
+                </div>
+            </header>
+
+            <main>
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="search">Búsqueda</button>
+                    <button class="tab-btn" data-tab="vaccines">Vacunación</button>
+                </div>
+
+                <div class="tab-content active" id="search-tab">
+                    <div class="card">
+                        <h3>Búsqueda de Mascotas</h3>
+                        <div class="search-bar">
+                            <input type="text" id="search-input" placeholder="Nombre de la mascota (prueba SQL Injection aquí)...">
+                            <button id="search-btn" class="btn-icon">🔍</button>
+                        </div>
+                        <div class="results-container">
+                            <table id="pets-table">
+                               <thead>
+                                   <tr>
+                                       <th>ID</th>
+                                       <th>Nombre</th>
+                                       <th>Especie</th>
+                                       <th>Dueño ID</th>
+                                   </tr>
+                               </thead>
+                               <tbody id="pets-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="vaccines-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Vacunación Pendiente</h3>
+                            <button id="refresh-vaccines" class="btn-secondary">Actualizar</button>
+                        </div>
+                        <div id="cache-indicator" class="indicator">Estado: ---</div>
+                        <div class="results-container">
+                            <table id="vaccines-table">
+                               <thead>
+                                   <tr>
+                                       <th>ID Mascota</th>
+                                       <th>Mascota</th>
+                                       <th>Dueño</th>
+                                       <th>Teléfono</th>
+                                   </tr>
+                               </thead>
+                               <tbody id="vaccines-body"></tbody>
+                            </table>
+                        </div>
+                        <div class="latency-info">Latencia: <span id="latency-val">0</span>ms</div>
+                    </div>
+
+                    <div class="card admin-only">
+                        <h3>Acciones Rápidas</h3>
+                        <button id="apply-vaccine-test" class="btn-primary">Aplicar Vacuna (Invalidar Caché)</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
